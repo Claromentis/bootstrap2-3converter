@@ -16,6 +16,11 @@ $(function () {
                 var output = '';
                 $out.html('');
 
+                // notable files
+                output += '<h5>Notable Files (' + d.notable_count + ')</h5><hr />';
+                for(var f in d.notable)
+                    output += d.notable[f] + '<br />';
+
                 // affected files
                 output += '<h5>Affected Files (' + d.affected_count + ')</h5><hr />';
                 for(var f in d.affected)

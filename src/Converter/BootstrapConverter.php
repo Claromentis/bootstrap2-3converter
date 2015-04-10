@@ -59,7 +59,9 @@ class BootstrapConverter
             'files'          => $files,
             'count'          => $count,
             'affected'       => $this->affected_files,
-            'affected_count' => count($this->affected_files)
+            'affected_count' => count($this->affected_files),
+            'notable'        => $this->notable_files,
+            'notable_count'  => count($this->notable_files)
         ));
         exit;
     }
@@ -132,6 +134,8 @@ class BootstrapConverter
         if( $modified && !in_array($this->active, $this->affected_files) )
             $this->affected_files[] = $this->active;
 
+        if( $notable && !in_array($this->active, $this->notable_files) )
+            $this->notable_files[] = $this->active;
 
         return $replacement;
     }

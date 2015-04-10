@@ -75,8 +75,7 @@ class GridConversion extends ConversionRule
         if( strpos('section|div|aside|article', $this->_element) !== false )
         {
             return preg_replace("/$old/", $new[0], $pair['class']);
-        } else
-            $this->is_notable = true;
+        }
 
         // else return the original class
         return $pair['class'];
