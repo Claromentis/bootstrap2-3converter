@@ -3,8 +3,14 @@ namespace Converter;
 
 abstract class ConversionRule
 {
-    public $is_modified = false;
-    public $is_notable = false;
+	public $is_modified = false;
+	public $is_notable = false;
 
-    public function run() {  /* noop */ }
+	/**
+	 * @param string $tag
+	 * @param array $attributes
+	 *
+	 * @return array
+	 */
+	abstract public function run($tag, $attributes);
 }
