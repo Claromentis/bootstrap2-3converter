@@ -3,52 +3,42 @@ namespace Converter;
 
 class FormConversion extends ConversionRule
 {
-	private $_element;
-
 	protected $_rules;
-
 
 	public function __construct()
 	{
 		$this->_rules = array(
-			"control-label" => "control-label col-sm-2",
+			"control-label" => ["control-label", "col-sm-2"],
 			"controls" => "col-sm-10",
 			"control-group" => "form-group",
 		);
 	}
 
 	/**
-	 * Revamped Grid System
-	 *
+	 * @param Tag $tag
 	 */
-	public function run($tag, $attributes)
+	public function run(Tag $tag)
 	{
-		// match opening tag and retrieve the element name
-		preg_match('/^<(\w+)\s/', $tag, $matches);
-		if ($matches && count($matches) == 2)
-			$this->_element = $matches[1];
-
-
-		// take the class attribute for element $_tag
-		if (array_key_exists('class', $attributes))
+		foreach ($this->_rules as $orig=>$replacement)
 		{
-			$before = $attributes['class'];
-
-			// each rule
-			foreach ($this->_rules as $old => $new)
+			$classes = $tag->GetClasses();
+			if (in_array($orig, $classes))
 			{
-				// plain old preg_replace, or custom replace?
-				if (is_array($new))
-					$attributes['class'] = call_user_func_array(array($this, $new[1]), array($old, $new, $attributes));
-				else
-					$attributes['class'] = preg_replace("/$old/", $new, $attributes['class']);
+				$tag->ChangeClasses([$orig], is_array($replacement) ? $replacement : [$replacement]);
+				$tag->is_modified = true;
 			}
-
-			// set modified
-			if ($before != $attributes['class'])
-				$this->is_modified = true;
 		}
 
-		return $attributes;
+		if (in_array($tag->tag, ['input', 'select', 'textarea']))
+		{
+			if ($tag->tag == 'input' && isset($tag->extra_attributes['type']) && !in_array($tag->extra_attributes['type'], ['text', 'password']))
+				;
+			else
+			{
+				if (!$tag->HasClass('form-control') && !$tag->HasClass('btn'))
+					$tag->ChangeClasses([], ['form-control']);
+			}
+		}
+
 	}
 }

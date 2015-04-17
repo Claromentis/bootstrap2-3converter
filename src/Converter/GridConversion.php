@@ -26,40 +26,35 @@ class GridConversion extends ConversionRule
 	 * * Change 'row-fluid' to 'row'
 	 * * Remove 'container-fluid'
 	 *
-	 * @param string $tag
-	 * @param array $attributes
-	 *
-	 * @return array
+	 * @param Tag $tag
 	 */
-	public function run($tag, $attributes)
+	public function run(Tag $tag)
 	{
-		// match opening tag and retrieve the element name
-		preg_match('/^<(\w+)\s/', $tag, $matches);
-		if ($matches && count($matches) == 2)
-			$this->_element = $matches[1];
-
+		$this->_element = $tag->tag;
 
 		// take the class attribute for element $_tag
-		if (array_key_exists('class', $attributes))
+		if (isset($tag->attributes['class']))
 		{
-			$before = $attributes['class'];
+			$before = $tag->attributes['class'];
+			$classes_str = $tag->attributes['class'];
 
 			// each rule
 			foreach ($this->_rules as $old => $new)
 			{
 				// plain old preg_replace, or custom replace?
 				if (is_array($new))
-					$attributes['class'] = call_user_func_array(array($this, $new[1]), array($old, $new, $attributes));
+					$classes_str = call_user_func_array(array($this, $new[1]), array($old, $new, $classes_str));
 				else
-					$attributes['class'] = preg_replace("/$old/", $new, $attributes['class']);
+					$classes_str = preg_replace("/$old/", $new, $classes_str);
 			}
 
 			// set modified
-			if ($before != $attributes['class'])
-				$this->is_modified = true;
+			if ($before != $classes_str)
+			{
+				$tag->SetClassesStr($classes_str);
+				$tag->is_modified = true;
+			}
 		}
-
-		return $attributes;
 	}
 
 	/**
@@ -67,19 +62,19 @@ class GridConversion extends ConversionRule
 	 *
 	 * @param string $old regex
 	 * @param array $new (css class, callable)
-	 * @param string $pair key value pair
+	 * @param string $classes_str
 	 *
 	 * @return mixed replaced class name
 	 */
-	private function specialReplace($old, $new, $pair)
+	private function specialReplace($old, $new, $classes_str)
 	{
 		// only preg_replace if we are <section> <div> <aside> or <article>
 		if (strpos('section|div|aside|article', $this->_element) !== false)
 		{
-			return preg_replace("/$old/", $new[0], $pair['class']);
+			return preg_replace("/$old/", $new[0], $classes_str);
 		}
 
 		// else return the original class
-		return $pair['class'];
+		return $classes_str;
 	}
 }

@@ -3,14 +3,9 @@ namespace Converter;
 
 abstract class ConversionRule
 {
-	public $is_modified = false;
-	public $is_notable = false;
-
 	/**
-	 * @param string $tag
-	 * @param array $attributes
+	 * @param Tag $tag
 	 *
-	 * @return array
 	 */
-	abstract public function run($tag, $attributes);
+	abstract public function run(Tag $tag);
 }
