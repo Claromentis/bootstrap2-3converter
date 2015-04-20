@@ -12,12 +12,10 @@ class BootstrapConverter
 	 * @var ConversionRule[]
 	 */
 	protected $rules;
-
 	protected $base_dir;
-	protected $current_dir;
+	protected $log_function;
 
-	public $affected_files = array();
-	public $notable_files = array();
+	private $cur_file_info = [];
 
 
 	public function __construct($directory)
@@ -47,30 +45,23 @@ class BootstrapConverter
 		 * @var  string $path
 		 * @var  \SplFileInfo $dir
 		 */
-		$count = 0;
-		$files = array();
 		foreach ($iter as $path => $dir)
 		{
 			if ($dir->getExtension() == 'html')
 			{
-				$files[] = $path;
-				$this->current_dir = $path;
+				$this->cur_file_info = array(
+					'path' => $path,
+					'is_affected' => false,
+					'is_notable' => false,
+				);
 				$this->replace($path);
-				$count++;
-			}
 
-			// break after first file has been read, debug only.
-			//if( $count == 1 ) break;
+				$func = $this->log_function;
+				$func($path, $this->cur_file_info);
+			}
 		}
 
-		return array(
-			'files' => $files,
-			'count' => $count,
-			'affected' => $this->affected_files,
-			'affected_count' => count($this->affected_files),
-			'notable' => $this->notable_files,
-			'notable_count' => count($this->notable_files)
-		);
+		return;
 	}
 
 	/**
@@ -86,6 +77,11 @@ class BootstrapConverter
 		$result = preg_replace_callback('/<[^\/](?:"[^"]*"|\'[^\']*\'|[^\'">])*>/', array($this, 'matchAttributes'), $string);
 
 		file_put_contents($path, $result);
+	}
+
+	public function SetLogFunction(Callable $func)
+	{
+		$this->log_function = $func;
 	}
 
 	/**
@@ -131,17 +127,10 @@ class BootstrapConverter
 	 */
 	private function convert($tag_obj)
 	{
-		$modified = 0;
-		$notable = 0;
-
 		foreach ($this->rules as $rule)
 		{
 			$rule->run($tag_obj);
 		}
-		if ($tag_obj->is_modified)
-			$modified++;
-		if ($tag_obj->is_notable)
-			$notable++;
 
 		// generate replacement string
 		$replacement = '';
@@ -149,11 +138,8 @@ class BootstrapConverter
 			$replacement = strlen($v) ? $k . '="' . $v . '"' : '';
 
 		// add file to list of affected files
-		if ($modified && !in_array($this->current_dir, $this->affected_files))
-			$this->affected_files[] = $this->current_dir;
-
-		if ($notable && !in_array($this->current_dir, $this->notable_files))
-			$this->notable_files[] = $this->current_dir;
+		$this->cur_file_info['is_affected'] = $tag_obj->is_modified || $this->cur_file_info['is_affected'];
+		$this->cur_file_info['is_notable'] = $tag_obj->is_notable || $this->cur_file_info['is_notable'];
 
 		return $replacement;
 	}
