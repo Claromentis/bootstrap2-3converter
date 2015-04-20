@@ -1,5 +1,8 @@
 <?php
-namespace Converter;
+namespace Converter\Rule;
+
+use Converter\ConversionRule;
+use Converter\Tag;
 
 class GridConversion extends ConversionRule
 {

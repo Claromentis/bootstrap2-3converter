@@ -29,10 +29,12 @@ $converter->SetLogFunction(function ($file_path, $info) use (&$result) {
 	if ($info['is_notable'])
 		$result['notable'][] = $file_path;
 
-	echo $file_path." - ".($info['is_affected'] ? 'UPDATED' : 'not changed')."\n";
+	//echo $file_path." - ".($info['is_affected'] ? 'UPDATED' : 'not changed')."\n";
+	echo ($info['is_affected'] ? '.' : 'x');
 });
 
 $converter->begin();
+echo "\n";
 
 //echo "Affected files: ".join("\n", $result['affected'])."\n\n";
 //echo "Notable files: ".join("\n", $result['notable'])."\n\n";

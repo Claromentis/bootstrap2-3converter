@@ -1,5 +1,7 @@
 <?php
-namespace Converter;
+namespace Converter\Rule;
+use Converter\ConversionRule;
+use Converter\Tag;
 
 /**
  * Adds btn-default if only btn class exists
@@ -13,7 +15,7 @@ class BtnConversion extends ConversionRule
 	 */
 	public function run(Tag $tag)
 	{
-		if ($tag->HasClass('btn') && !$tag->HasClass('btn-(.*)'))
+		if ($tag->HasClass('btn') && !$tag->HasClass('btn-(.*)', true))
 		{
 			$tag->ChangeClasses([], ['btn-default']);
 			$tag->is_modified = true;

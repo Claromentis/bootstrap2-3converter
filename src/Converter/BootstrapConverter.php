@@ -29,9 +29,10 @@ class BootstrapConverter
 	public function begin()
 	{
 		$this->rules = array(
-			new GridConversion(),
-			new FormConversion(),
-			new BtnConversion(),
+			new Rule\GridConversion(),
+			new Rule\FormConversion(),
+			new Rule\BtnConversion(),
+			new Rule\AlertConversion(),
 		);
 
 
