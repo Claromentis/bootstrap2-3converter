@@ -11,9 +11,10 @@ class FormConversion extends ConversionRule
 	public function __construct()
 	{
 		$this->_rules = array(
-			"control-label" => ["control-label", "col-sm-2"],
-			"controls" => "col-sm-10",
+			"control-label" => ["control-label", "col-md-3 col-sm-2"],
+			"controls" => "col-md-9 col-sm-10",
 			"control-group" => "form-group",
+			"form-actions" => "col-md-offset-3 col-md-9 col-sm-offset-2 col-sm-10",
 		);
 	}
 
@@ -26,10 +27,7 @@ class FormConversion extends ConversionRule
 		{
 			$classes = $tag->GetClasses();
 			if (in_array($orig, $classes))
-			{
 				$tag->ChangeClasses([$orig], is_array($replacement) ? $replacement : [$replacement]);
-				$tag->is_modified = true;
-			}
 		}
 
 		if (in_array($tag->tag, ['input', 'select', 'textarea']))

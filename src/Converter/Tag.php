@@ -67,6 +67,7 @@ class Tag
 		$classes = array_diff($classes, $remove);
 		$classes = array_merge($classes, $add);
 		$this->SetClasses($classes);
+		$this->is_modified = true;
 	}
 
 	public function HasClass($class_name, $is_regex = false)

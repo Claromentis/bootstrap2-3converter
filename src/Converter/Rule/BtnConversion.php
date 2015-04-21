@@ -15,10 +15,16 @@ class BtnConversion extends ConversionRule
 	 */
 	public function run(Tag $tag)
 	{
-		if ($tag->HasClass('btn') && !$tag->HasClass('btn-(.*)', true))
+		if ($tag->HasClass('btn'))
 		{
-			$tag->ChangeClasses([], ['btn-default']);
-			$tag->is_modified = true;
+			if (!$tag->HasClass('btn-(default|primary|success|info|warning|danger|link)', true))
+				$tag->ChangeClasses([], ['btn-default']);
+
+			if ($tag->HasClass('btn-small'))
+				$tag->ChangeClasses(['btn-small'], ['btn-sm']);
+
+			if ($tag->HasClass('btn-large'))
+				$tag->ChangeClasses(['btn-large'], ['btn-lg']);
 		}
 	}
 }

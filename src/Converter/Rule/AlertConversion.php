@@ -18,15 +18,9 @@ class AlertConversion extends ConversionRule
 	public function run(Tag $tag)
 	{
 		if ($tag->HasClass('alert-error'))
-		{
 			$tag->ChangeClasses(['alert-error'], ['alert-danger']);
-			$tag->is_modified = true;
-		}
 
 		if ($tag->HasClass('alert') && !$tag->HasClass('alert-(.*)', true))
-		{
 			$tag->ChangeClasses([], ['alert-warning']);
-			$tag->is_modified = true;
-		}
 	}
 }

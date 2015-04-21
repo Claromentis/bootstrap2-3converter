@@ -33,6 +33,9 @@ class BootstrapConverter
 			new Rule\FormConversion(),
 			new Rule\BtnConversion(),
 			new Rule\AlertConversion(),
+			new Rule\ListsConversion(),
+			new Rule\NavListConversion(),
+			new Rule\ThumbnailsConversion(),
 		);
 
 

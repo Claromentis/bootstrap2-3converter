@@ -17,7 +17,7 @@ class GridConversion extends ConversionRule
 			"row-fluid" => "row",
 			"container-fluid" => "",
 			"span(\\d+)" => array("col-md-$1", 'specialReplace'),
-			"offset(\\d+)" => array("col-lg-offset-$1", 'specialReplace')
+			"offset(\\d+)" => array("col-md-offset-$1", 'specialReplace')
 		);
 	}
 
@@ -71,8 +71,7 @@ class GridConversion extends ConversionRule
 	 */
 	private function specialReplace($old, $new, $classes_str)
 	{
-		// only preg_replace if we are <section> <div> <aside> or <article>
-		if (strpos('section|div|aside|article', $this->_element) !== false)
+		if (strpos('li|section|div|aside|article', $this->_element) !== false)
 		{
 			return preg_replace("/$old/", $new[0], $classes_str);
 		}
