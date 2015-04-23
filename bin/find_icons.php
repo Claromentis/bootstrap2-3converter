@@ -33,11 +33,13 @@ $converter->SetLogFunction(function ($file_path, $info) use (&$result) {
 	echo ($info['is_affected'] ? '.' : 'x');
 });
 
+$icons = new \Converter\Rule\ClaIconsCollector();
+$converter->SetConversionRules([$icons]);
+
 $converter->Run($path);
 echo "\n";
 
-//echo "Affected files: ".join("\n", $result['affected'])."\n\n";
-//echo "Notable files: ".join("\n", $result['notable'])."\n\n";
-echo "Total checked: ".$result['count']."\n";
-echo "Total affected: ".count($result['affected'])."\n";
-echo "Total notable: ".count($result['notable'])."\n";
+$icons_list = $icons->icons;
+asort($icons_list);
+var_export($icons_list);
+echo "\nTotal icons: ".count($icons_list)."\n";

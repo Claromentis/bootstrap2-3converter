@@ -12,21 +12,11 @@ class BootstrapConverter
 	 * @var ConversionRule[]
 	 */
 	protected $rules;
-	protected $base_dir;
 	protected $log_function;
 
 	private $cur_file_info = [];
 
-
-	public function __construct($directory)
-	{
-		$this->base_dir = $directory;
-	}
-
-	/**
-	 * Begin conversion process
-	 */
-	public function begin()
+	public function __construct()
 	{
 		$this->rules = array(
 			new Rule\GridConversion(),
@@ -36,12 +26,20 @@ class BootstrapConverter
 			new Rule\ListsConversion(),
 			new Rule\NavListConversion(),
 			new Rule\ThumbnailsConversion(),
+			new Rule\IconsConversion(),
 		);
+	}
 
-
+	/**
+	 * Begin conversion process
+	 *
+	 * @param $directory
+	 */
+	public function Run($directory)
+	{
 		// create a directory iterator
 		$iter = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator($this->base_dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+			new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
 			\RecursiveIteratorIterator::SELF_FIRST
 		);
 
@@ -58,7 +56,7 @@ class BootstrapConverter
 					'is_affected' => false,
 					'is_notable' => false,
 				);
-				$this->replace($path);
+				$this->ConvertFile($path);
 
 				$func = $this->log_function;
 				$func($path, $this->cur_file_info);
@@ -69,11 +67,27 @@ class BootstrapConverter
 	}
 
 	/**
+	 * @param ConversionRule $rule
+	 */
+	public function AddConversionRule(ConversionRule $rule)
+	{
+		$this->rules[] = $rule;
+	}
+
+	/**
+	 * @param ConversionRule[] $rules
+	 */
+	public function SetConversionRules($rules)
+	{
+		$this->rules = $rules;
+	}
+
+	/**
 	 * Regex match the contents of each html file for its markup.
 	 *
 	 * @param string $path
 	 */
-	private function replace($path)
+	private function ConvertFile($path)
 	{
 		$string = file_get_contents($path);
 
@@ -115,7 +129,7 @@ class BootstrapConverter
 			function ($match) use ($tag)
 			{
 				$tag->SetClassesStr($match[1]);
-				return $this->convert($tag);
+				return $this->ConvertTag($tag);
 			}, $full_tag);
 
 		return $replacement;
@@ -129,7 +143,7 @@ class BootstrapConverter
 	 *
 	 * @return string
 	 */
-	private function convert($tag_obj)
+	private function ConvertTag($tag_obj)
 	{
 		foreach ($this->rules as $rule)
 		{
