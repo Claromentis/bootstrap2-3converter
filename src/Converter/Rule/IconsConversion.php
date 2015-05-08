@@ -18,6 +18,7 @@ class IconsConversion extends ConversionRule
 	public function __construct()
 	{
 		$this->replacement = [
+			'cla-icon' => '',
 			'cla-icon-clipboard-text' => 'glyphicons-notes-2',
 			'cla-icon-link-break' => 'glyphicons-cat',
 			'cla-icon-feed-document' => 'glyphicons-cat',
@@ -73,7 +74,7 @@ class IconsConversion extends ConversionRule
 			'cla-icon-telephone' => 'glyphicons-earphone',
 			'cla-icon-application-key' => 'glyphicons-cat',
 			'cla-icon-application-view-tile' => 'glyphicons-cat',
-			'cla-icon-timeline-marker' => 'glyphicons-ruller',
+			'cla-icon-timeline-marker' => 'glyphicons-ruler',
 			'cla-icon-bookmark' => 'glyphicons-bookmark',
 			'cla-icon-email-send' => 'glyphicons-cat',
 			'cla-icon-accordion-closed' => 'glyphicons-collapse',
